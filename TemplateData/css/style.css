@@ -26,16 +26,14 @@ body{
 }
 
 #fullScreenButton{
-	height:50px;
-	width:50px;
+	height:30px;
+	width:30px;
 	position:absolute;
 	z-index:1;
 	bottom:5px;
 	right:5px;
 	background-color:transparent;
 	background-image:url("../img/fullScreen_on.png");
-	background-repeat: no-repeat;
-	background-position: center;
 	background-size:30px 30px;
 	border:none;
 	cursor: pointer;
@@ -43,11 +41,11 @@ body{
 
 .subtitle{
 	color:#1896a7;
-	font-size:2.3vh;
-	padding-bottom:2.3vh;
-	padding-top:2.5vh;
+	font-size:2.5vh;
+	padding-bottom:3vh;
+	padding-top: 3vh;
 	display: block;
-	height:20vh;
+	height:15vh;
 	width:40vw;
 	margin:auto;
 	text-align: center;
@@ -148,7 +146,6 @@ body{
 		left: 0;
 		bottom: 0;
 		right: 0;
-		height:100%;
 	}
 
 	.logo{
@@ -194,6 +191,12 @@ body{
 	.browserIcons a img{
 		width:8vw;
 	}
+	
+	.webgl-content,#loadingBlock,#errorBrowserBlock{
+		border:1px solid #c6c9ca;
+		width:calc(100% - 2px);
+		height:auto;
+	}
 }*/
 
 
@@ -224,5 +227,10 @@ body{
 	
 	.subtitle,#progressBar,#warningBrowserBlock,#warningMobileBlock,#errorContent{
 		width:100vh;
+	}
+	
+	.webgl-content,#loadingBlock,#errorBrowserBlock{
+		border:1px solid #c6c9ca;
+		height:calc(100% - 2px);
 	}
 }*/
