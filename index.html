@@ -42,11 +42,13 @@
 
 <script>
   function telegramShare(dataUri) {
+    let blob = new Blob([blobData], { type: "image/png" });
+    let url = URL.createObjectURL(blob);
+
     if (navigator.share) {
         navigator.share({
-            title: "Ekran Görüntüsü",
-            text: "Unity WebGL uygulamasından alınan ekran görüntüsü",
-            url: dataUri // Base64 veya URL olabilir
+            title: "Unity Screenshot",
+            files: [blob],
         })
         .then(() => console.log("Paylaşım başarılı!"))
         .catch((error) => console.error("Paylaşım başarısız:", error));
