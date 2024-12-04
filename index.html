@@ -1,56 +1,67 @@
 <!DOCTYPE html>
 <html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Share</title>
+  </head>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
+    <script src="Build/mpalazli.github.io.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity WebGL Player | Share</title>
-</head>
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
 
-<body style="text-align: center; padding: 0; border: 0; margin: 0;">
-  <canvas id="unity-canvas" width=960 height=600 tabindex="-1"
-    style="width: 960px; height: 600px; background: #231F20"></canvas>
-  <script src="Build/mpalazli.github.io.loader.js"></script>
-  <script>
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      // Mobile device style: fill the whole browser client area with the game canvas:
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-      document.getElementsByTagName('head')[0].appendChild(meta);
+        document.body.style.textAlign = "left";
+      }
 
-      var canvas = document.querySelector("#unity-canvas");
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
-      canvas.style.position = "fixed";
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/mpalazli.github.io.data",
+        frameworkUrl: "Build/mpalazli.github.io.framework.js",
+        codeUrl: "Build/mpalazli.github.io.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Share",
+        productVersion: "1.0",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      });
+    </script>
 
-      document.body.style.textAlign = "left";
-    }
-
-    createUnityInstance(document.querySelector("#unity-canvas"), {
-      dataUrl: "Build/mpalazli.github.io.data",
-      frameworkUrl: "Build/mpalazli.github.io.framework.js",
-      codeUrl: "Build/mpalazli.github.io.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "DefaultCompany",
-      productName: "Share",
-      productVersion: "1.0",
-      // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-      // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-    });
+<script>
+  function ShareImageJS(base64Image) {
+      const imageBlob = base64ToBlob(base64Image, "image/png");
+      const imageURL = URL.createObjectURL(imageBlob);
+  
+      if (navigator.share) {
+          navigator
+              .share({
+                  title: "Paylaş",
+                  text: "Ekran görüntünüzü paylaşmak ister misiniz?",
+                  files: [new File([imageBlob], "screenshot.png", { type: "image/png" })],
+              })
+              .then(() => console.log("Paylaşıldı"))
+              .catch(err => console.error("Paylaşım iptal edildi: ", err));
+      } else {
+          alert("Cihazınız bu paylaşımı desteklemiyor.");
+      }
+  }
+  
+  function base64ToBlob(base64, mime) {
+      const byteChars = atob(base64);
+      const byteNumbers = Array.from(byteChars, char => char.charCodeAt(0));
+      const byteArray = new Uint8Array(byteNumbers);
+      return new Blob([byteArray], { type: mime });
+  }
   </script>
-
-  <script>
-   function telegramSendData(base64Image) {
-    if (window.Telegram && window.Telegram.WebApp) {
-        Telegram.WebApp.sendData(base64Image); // Base64 veriyi gönder
-        console.log("Base64 veri gönderildi:", base64Image);
-    } else {
-        console.error("Telegram WebApp API mevcut değil.");
-    }
-}
-  </script>
-
-</body>
-
+  </body>
 </html>
