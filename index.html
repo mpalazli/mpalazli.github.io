@@ -40,16 +40,23 @@
     });
   </script>
 
-  <script>
-    function telegramShare(dataUri) {
+<script>
+  // Telegram API üzerinden paylaşım fonksiyonu
+  function telegramShare(dataUri) {
       if (window.Telegram.WebApp) {
-        // Telegram API ile paylaşımı başlatın
-        Telegram.WebApp.sendData(dataUri);
+          // Telegram API'nin mevcut olup olmadığını kontrol et
+          console.log("Paylaşılan veri: ", dataUri);
+
+          // Telegram WebApp API'si ile veriyi paylaş
+          Telegram.WebApp.sendData(dataUri);
+
+          // Opsiyonel: Paylaşıldığını bildirmek için geri dönüş
+          console.log("Veri Telegram Mini App ile paylaşıldı.");
       } else {
-        console.log("Telegram WebApp API bulunamadı.");
+          console.error("Telegram WebApp API mevcut değil.");
       }
-    }
-  </script>
+  }
+</script>
 
 </body>
 
