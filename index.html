@@ -40,23 +40,16 @@
     });
   </script>
 
-<script>
-  function telegramShare(dataUri) {
-    let blob = new Blob([blobData], { type: "image/png" });
-    let url = URL.createObjectURL(blob);
-
-    if (navigator.share) {
-        navigator.share({
-            title: "Unity Screenshot",
-            files: [blob],
-        })
-        .then(() => console.log("Paylaşım başarılı!"))
-        .catch((error) => console.error("Paylaşım başarısız:", error));
+  <script>
+   function telegramSendData(base64Image) {
+    if (window.Telegram && window.Telegram.WebApp) {
+        Telegram.WebApp.sendData(base64Image); // Base64 veriyi gönder
+        console.log("Base64 veri gönderildi:", base64Image);
     } else {
-        console.error("Web Share API desteklenmiyor.");
+        console.error("Telegram WebApp API mevcut değil.");
     }
 }
-</script>
+  </script>
 
 </body>
 
