@@ -37,31 +37,5 @@
       });
     </script>
 
-<script>
-  function ShareImageJS(base64Image) {
-      const imageBlob = base64ToBlob(base64Image, "image/png");
-      const imageURL = URL.createObjectURL(imageBlob);
-  
-      if (navigator.share) {
-          navigator
-              .share({
-                  title: "Paylaş",
-                  text: "Ekran görüntünüzü paylaşmak ister misiniz?",
-                  files: [new File([imageBlob], "screenshot.png", { type: "image/png" })],
-              })
-              .then(() => console.log("Paylaşıldı"))
-              .catch(err => console.error("Paylaşım iptal edildi: ", err));
-      } else {
-          alert("Cihazınız bu paylaşımı desteklemiyor.");
-      }
-  }
-  
-  function base64ToBlob(base64, mime) {
-      const byteChars = atob(base64);
-      const byteNumbers = Array.from(byteChars, char => char.charCodeAt(0));
-      const byteArray = new Uint8Array(byteNumbers);
-      return new Blob([byteArray], { type: mime });
-  }
-  </script>
   </body>
 </html>
