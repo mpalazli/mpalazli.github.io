@@ -1,40 +1,72 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | PoncHead</title>
-  </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
-    <script src="Build/a0eb54968f12b724932ff61ec1f2137c.loader.js"></script>
-    <script>
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
 
-        var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Unity WebGL Player | PoncHead</title>
+  <script src="https://unpkg.com/tonweb@latest/dist/tonweb.js"></script>
 
-        document.body.style.textAlign = "left";
-      }
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
 
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/7078d29b26d4e7c8a571915160076a5d.data",
-        frameworkUrl: "Build/bec346d9734a729c8a5f8d1a6f6282a4.framework.js",
-        codeUrl: "Build/e16f82515ac9523097f9b2d6ec9d9eba.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Ponchiqs",
-        productName: "PoncHead",
-        productVersion: "1.0",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-      });
-    </script>
-  </body>
+<body style="text-align: center; padding: 0; border: 0; margin: 0;">
+  <canvas id="unity-canvas" width=960 height=600 tabindex="-1"
+    style="width: 960px; height: 600px; background: #231F20"></canvas>
+  <script src="Build/a0eb54968f12b724932ff61ec1f2137c.loader.js"></script>
+  <script>
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // Mobile device style: fill the whole browser client area with the game canvas:
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+
+      var canvas = document.querySelector("#unity-canvas");
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.position = "fixed";
+
+      document.body.style.textAlign = "left";
+    }
+
+    createUnityInstance(document.querySelector("#unity-canvas"), {
+      dataUrl: "Build/bd5a78e172db1fc9de61172dddbf69ad.data",
+      frameworkUrl: "Build/ca53080d11c8152eb8035b207f1be381.framework.js",
+      codeUrl: "Build/027f995241c54ba4e7e05d31e9d6803e.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Ponchiqs",
+      productName: "PoncHead",
+      productVersion: "1.0",
+      // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+      // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+    });
+  </script>
+
+  <script>
+    // Telegram Web App API yüklendiğinde çalıştır
+    Telegram.WebApp.ready();
+    // initData'yı al
+    const initData = Telegram.WebApp.initData || '';
+    const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
+    let chatId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
+    // initData'nın boş olup olmadığını kontrol et
+    if (initData === '') {
+      //window.location.href = "https://web.telegram.org/";
+    }
+
+    // Tam ekran modunu hemen dene
+    Telegram.WebApp.requestFullscreen();
+
+    // Başarısız olursa hata mesajını kontrol et
+    Telegram.WebApp.onEvent('fullscreenFailed', function () {
+      console.log('Tam ekran moduna geçiş başarısız oldu.');
+    });
+
+    Telegram.WebApp.onEvent('fullscreenChanged', function () {
+      console.log('Tam ekran moduna geçildi.');
+    });
+  </script>
+</body>
+
 </html>
