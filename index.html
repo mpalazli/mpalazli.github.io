@@ -1,72 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | PoncHead</title>
+  </head>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
+    <script src="Build/a0eb54968f12b724932ff61ec1f2137c.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity WebGL Player | PoncHead</title>
-  <script src="https://unpkg.com/tonweb@latest/dist/tonweb.js"></script>
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
+        document.body.style.textAlign = "left";
+      }
 
-<body style="text-align: center; padding: 0; border: 0; margin: 0;">
-  <canvas id="unity-canvas" width=960 height=600 tabindex="-1"
-    style="width: 960px; height: 600px; background: #231F20"></canvas>
-  <script src="Build/a0eb54968f12b724932ff61ec1f2137c.loader.js"></script>
-  <script>
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      // Mobile device style: fill the whole browser client area with the game canvas:
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-      document.getElementsByTagName('head')[0].appendChild(meta);
-
-      var canvas = document.querySelector("#unity-canvas");
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
-      canvas.style.position = "fixed";
-
-      document.body.style.textAlign = "left";
-    }
-
-    createUnityInstance(document.querySelector("#unity-canvas"), {
-      dataUrl: "Build/bd5a78e172db1fc9de61172dddbf69ad.data",
-      frameworkUrl: "Build/ca53080d11c8152eb8035b207f1be381.framework.js",
-      codeUrl: "Build/027f995241c54ba4e7e05d31e9d6803e.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "Ponchiqs",
-      productName: "PoncHead",
-      productVersion: "1.0",
-      // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-      // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-    });
-  </script>
-
-  <script>
-    // Telegram Web App API yüklendiğinde çalıştır
-    Telegram.WebApp.ready();
-    // initData'yı al
-    const initData = Telegram.WebApp.initData || '';
-    const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
-    let chatId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
-    // initData'nın boş olup olmadığını kontrol et
-    if (initData === '') {
-      //window.location.href = "https://web.telegram.org/";
-    }
-
-    // Tam ekran modunu hemen dene
-    Telegram.WebApp.requestFullscreen();
-
-    // Başarısız olursa hata mesajını kontrol et
-    Telegram.WebApp.onEvent('fullscreenFailed', function () {
-      console.log('Tam ekran moduna geçiş başarısız oldu.');
-    });
-
-    Telegram.WebApp.onEvent('fullscreenChanged', function () {
-      console.log('Tam ekran moduna geçildi.');
-    });
-  </script>
-</body>
-
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/372fe1072105386f16142642befcdc0c.data",
+        frameworkUrl: "Build/969bb2d577c7822ba3317d5f020ad41b.framework.js",
+        codeUrl: "Build/8b55c1106e2ddf8d388d1b613b967709.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Ponchiqs",
+        productName: "PoncHead",
+        productVersion: "1.0",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      });
+    </script>
+  </body>
 </html>
