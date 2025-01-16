@@ -36,5 +36,29 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       });
     </script>
+    <script>
+      // Telegram Web App API yüklendiğinde çalıştır
+      Telegram.WebApp.ready();
+      // initData'yı al
+      const initData = Telegram.WebApp.initData || '';
+      const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
+      let chatId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
+      // initData'nın boş olup olmadığını kontrol et
+      if (initData === '') {
+        //window.location.href = "https://web.telegram.org/";
+      }
+  
+      // Tam ekran modunu hemen dene
+      Telegram.WebApp.requestFullscreen();
+  
+      // Başarısız olursa hata mesajını kontrol et
+      Telegram.WebApp.onEvent('fullscreenFailed', function () {
+        console.log('Tam ekran moduna geçiş başarısız oldu.');
+      });
+  
+      Telegram.WebApp.onEvent('fullscreenChanged', function () {
+        console.log('Tam ekran moduna geçildi.');
+      });
+    </script>
   </body>
 </html>
