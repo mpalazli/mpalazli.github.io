@@ -8,9 +8,6 @@
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
     <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
     <script src="Build/a0eb54968f12b724932ff61ec1f2137c.loader.js"></script>
-    <script src="https://unpkg.com/tonweb@latest/dist/tonweb.js"></script>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
@@ -28,7 +25,7 @@
       }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/372fe1072105386f16142642befcdc0c.data",
+        dataUrl: "Build/cfd23646c8ac75e33acff133afaa65bd.data",
         frameworkUrl: "Build/969bb2d577c7822ba3317d5f020ad41b.framework.js",
         codeUrl: "Build/8b55c1106e2ddf8d388d1b613b967709.wasm",
         streamingAssetsUrl: "StreamingAssets",
@@ -39,6 +36,5 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       });
     </script>
-    
   </body>
 </html>
