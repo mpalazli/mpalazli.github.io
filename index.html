@@ -4,9 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | PoncHead</title>
-    <script src="https://unpkg.com/tonweb@latest/dist/tonweb.js"></script>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
     <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
@@ -28,7 +25,7 @@
       }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/a5ee6a5662c86aecb651f3dbb7a303b4.data",
+        dataUrl: "Build/1d261eb321f83ee9ecbb91d3df41e407.data",
         frameworkUrl: "Build/969bb2d577c7822ba3317d5f020ad41b.framework.js",
         codeUrl: "Build/a793ffdc0e93e68edd635df504d9047e.wasm",
         streamingAssetsUrl: "StreamingAssets",
@@ -37,30 +34,6 @@
         productVersion: "1.0",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-      });
-    </script>
-     <script>
-      // Telegram Web App API yüklendiğinde çalıştır
-      Telegram.WebApp.ready();
-      // initData'yı al
-      const initData = Telegram.WebApp.initData || '';
-      const initDataUnsafe = Telegram.WebApp.initDataUnsafe || {};
-      let chatId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
-      // initData'nın boş olup olmadığını kontrol et
-      if (initData === '') {
-        //window.location.href = "https://web.telegram.org/";
-      }
-  
-      // Tam ekran modunu hemen dene
-      Telegram.WebApp.requestFullscreen();
-  
-      // Başarısız olursa hata mesajını kontrol et
-      Telegram.WebApp.onEvent('fullscreenFailed', function () {
-        console.log('Tam ekran moduna geçiş başarısız oldu.');
-      });
-  
-      Telegram.WebApp.onEvent('fullscreenChanged', function () {
-        console.log('Tam ekran moduna geçildi.');
       });
     </script>
   </body>
