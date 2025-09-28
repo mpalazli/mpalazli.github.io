@@ -1,185 +1,209 @@
-<?php
-/**
- * Gizli Kelime API - Hosting için Index.php Versiyonu
- * Bu dosyayı hosting sağlayıcınızın ana dizinine yükleyin
- */
-
-// HATA RAPORLAMASI KAPALI (JSON bozmasın)
-error_reporting(0);
-ini_set('display_errors', 0);
-
-// JSON HEADER'LARI - EN ÖNEMLİ KISIM!
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Accept, User-Agent');
-
-// OPTIONS isteği için
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
-// SADECE JSON ÇIKTI - HİÇBİR HTML YOK!
-try {
-    // Türkçe gizli kelime havuzu
-    $wordPool = [
-        'güvenlik',
-        'sistem',
-        'kapı',
-        'giriş',
-        'çıkış',
-        'merhaba',
-        'hoşgeldin',
-        'teşekkür',
-        'lütfen',
-        'tamam',
-        'başla',
-        'bitir',
-        'devam',
-        'dur',
-        'bekle',
-        'açık',
-        'kapalı',
-        'yeşil',
-        'kırmızı',
-        'mavi',
-        'bir',
-        'iki',
-        'üç',
-        'dört',
-        'beş',
-        'altı',
-        'yedi',
-        'sekiz',
-        'dokuz',
-        'on',
-        'güzel',
-        'harika',
-        'mükemmel',
-        'başarılı',
-        'doğru',
-        'ev',
-        'ofis',
-        'masa',
-        'sandalye',
-        'pencere',
-        'telefon',
-        'bilgisayar',
-        'tablet',
-        'kamera',
-        'mikrofon',
-        'kitap',
-        'kalem',
-        'kağıt',
-        'dosya',
-        'klasör',
-        'su',
-        'çay',
-        'kahve',
-        'ekmek',
-        'peynir',
-        'sabah',
-        'öğle',
-        'akşam',
-        'gece',
-        'gün',
-        'pazartesi',
-        'salı',
-        'çarşamba',
-        'perşembe',
-        'cuma',
-        'ocak',
-        'şubat',
-        'mart',
-        'nisan',
-        'mayıs',
-        'haziran',
-        'temmuz',
-        'ağustos',
-        'eylül',
-        'ekim'
-    ];
-
-    // 3 dakikalık zaman dilimlerine göre kelime seç
-    $currentTime = time();
-    $intervalSeconds = 3 * 60; // 3 dakika = 180 saniye
-    $intervalIndex = floor($currentTime / $intervalSeconds);
-    $wordIndex = $intervalIndex % count($wordPool);
-    $selectedWord = $wordPool[$wordIndex];
-    
-    // Sonraki değişim zamanı
-    $nextChangeTime = ($intervalIndex + 1) * $intervalSeconds;
-    $remainingSeconds = $nextChangeTime - $currentTime;
-    
-    // Basit rate limiting
-    $clientIP = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $cacheFile = sys_get_temp_dir() . '/rate_limit_' . md5($clientIP);
-    
-    if (file_exists($cacheFile)) {
-        $lastRequest = (int)file_get_contents($cacheFile);
-        if (time() - $lastRequest < 2) { // 2 saniyede bir istek
-            http_response_code(429);
-            echo json_encode([
-                'success' => false,
-                'error' => 'Too many requests',
-                'retry_after' => 2
-            ], JSON_UNESCAPED_UNICODE);
-            exit();
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizli Kelime Servisi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-    }
-    
-    file_put_contents($cacheFile, time());
-    
-    // BAŞARILI YANIT - SADECE JSON
-    $response = [
-        'success' => true,
-        'secret_word' => $selectedWord,
-        'timestamp' => $currentTime,
-        'interval_info' => [
-            'interval_index' => $intervalIndex,
-            'next_change_in_seconds' => $remainingSeconds,
-            'next_change_time' => date('Y-m-d H:i:s', $nextChangeTime)
-        ],
-        'server_info' => [
-            'php_version' => PHP_VERSION,
-            'server_time' => date('Y-m-d H:i:s'),
-            'timezone' => date_default_timezone_get()
-        ]
-    ];
-    
-    // Debug modu
-    if (isset($_GET['debug']) && $_GET['debug'] === '1') {
-        $response['debug'] = [
-            'word_pool_size' => count($wordPool),
-            'current_time' => $currentTime,
-            'interval_seconds' => $intervalSeconds,
-            'word_index' => $wordIndex,
-            'client_ip' => $clientIP
-        ];
-    }
-    
-    // JSON ÇIKTI - HİÇBİR EK KARAKTER YOK
-    echo json_encode($response, JSON_UNESCAPED_UNICODE);
-    
-} catch (Exception $e) {
-    // HATA DURUMUNDA DA SADECE JSON
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Internal server error',
-        'message' => $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
-} catch (Error $e) {
-    // FATAL ERROR DURUMUNDA DA SADECE JSON
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Fatal error',
-        'message' => $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
-}
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Gizli Kelime Servisi</h1>
+        
+        <div id="status" class="status warning">
+            <strong>⚠️ PHP Çalışmıyor!</strong><br>
+            Hosting sağlayıcınız PHP'yi desteklemiyor veya doğru yapılandırılmamış.
+        </div>
 
-// HİÇBİR EK ÇIKTI YOK - SADECE JSON!
-exit();
-?>
+        <h2>📋 Mevcut Durum</h2>
+        <div id="current-word">
+            <strong>Gizli Kelime:</strong> <span id="word">güvenlik</span><br>
+            <strong>Son Güncelleme:</strong> <span id="update-time">Manuel</span><br>
+            <strong>Sonraki Değişim:</strong> <span id="next-change">3 dakika sonra</span>
+        </div>
+
+        <h2>🔧 Çözüm Seçenekleri</h2>
+        
+        <button onclick="testPHP()">PHP Testi Yap</button>
+        <button onclick="useStaticJSON()">Statik JSON Kullan</button>
+        <button onclick="useJavaScript()">JavaScript Çözümü</button>
+        
+        <div id="test-results"></div>
+
+        <h2>📱 Flutter Uygulaması İçin</h2>
+        <p>Flutter uygulamanızda şu URL'yi kullanın:</p>
+        <pre id="flutter-url">https://yourdomain.com/secret_word.json</pre>
+        
+        <h2>🔄 Manuel Kelime Değiştirme</h2>
+        <id="word-selector">
+            <option value="güvenlik">güvenlik</option>
+            <option value="sistem">sistem</option>
+            <option value="kapı">kapı</option>
+            <option value="giriş">giriş</option>
+            <option value="çıkış">çıkış</option>
+            <option value="merhaba">merhaba</option>
+            <option value="hoşgeldin">hoşgeldin</option>
+            <option value="teşekkür">teşekkür</option>
+            <option value="lütfen">lütfen</option>
+            <option value="tamam">tamam</option>
+        </select>
+        <button onclick="changeWord()">Kelimeyi Değiştir</button>
+
+        <h2>📊 JSON Çıktısı</h2>
+        <pre id="json-output"></pre>
+    </div>
+
+    <script>
+        // Türkçe kelime havuzu
+        const wordPool = [
+            'güvenlik', 'sistem', 'kapı', 'giriş', 'çıkış',
+            'merhaba', 'hoşgeldin', 'teşekkür', 'lütfen', 'tamam',
+            'başla', 'bitir', 'devam', 'dur', 'bekle',
+            'açık', 'kapalı', 'yeşil', 'kırmızı', 'mavi'
+        ];
+
+        let currentWord = 'güvenlik';
+        let lastUpdateTime = new Date();
+
+        // 3 dakikalık otomatik kelime değişimi
+        function getTimeBasedWord() {
+            const now = new Date();
+            const minutes = Math.floor(now.getTime() / (1000 * 60 * 3)); // 3 dakikalık bloklar
+            const wordIndex = minutes % wordPool.length;
+            return wordPool[wordIndex];
+        }
+
+        // Kelimeyi güncelle
+        function updateWord() {
+            currentWord = getTimeBasedWord();
+            lastUpdateTime = new Date();
+            
+            document.getElementById('word').textContent = currentWord;
+            document.getElementById('update-time').textContent = lastUpdateTime.toLocaleString('tr-TR');
+            
+            // Sonraki değişim zamanını hesapla
+            const nextChange = new Date(lastUpdateTime.getTime() + (3 * 60 * 1000));
+            const remaining = Math.max(0, Math.floor((nextChange - new Date()) / 1000));
+            document.getElementById('next-change').textContent = remaining + ' saniye sonra';
+            
+            updateJSON();
+        }
+
+        // JSON çıktısını güncelle
+        function updateJSON() {
+            const response = {
+                success: true,
+                secret_word: currentWord,
+                timestamp: Math.floor(Date.now() / 1000),
+                interval_info: {
+                    interval_index: Math.floor(Date.now() / (1000 * 60 * 3)),
+                    next_change_in_seconds: Math.max(0, Math.floor((lastUpdateTime.getTime() + (3 * 60 * 1000) - Date.now()) / 1000)),
+                    next_change_time: new Date(lastUpdateTime.getTime() + (3 * 60 * 1000)).toISOString()
+                },
+                server_info: {
+                    php_version: "JavaScript Alternative",
+                    server_time: new Date().toISOString(),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                }
+            };
+            
+            document.getElementById('json-output').textContent = JSON.stringify(response, null, 2);
+        }
+
+        // PHP testi
+        async function testPHP() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<div class="status warning">PHP test ediliyor...</div>';
+            
+            try {
+                const response = await fetch('phpinfo.php');
+                const text = await response.text();
+                
+                if (text.includes('PHP çalışıyor')) {
+                    results.innerHTML = '<div class="status success"><strong>✅ PHP Çalışıyor!</strong><br>index.php dosyanızı kullanabilirsiniz.</div>';
+                } else {
+                    results.innerHTML = '<div class="status error"><strong>❌ PHP Çalışmıyor</strong><br>Alternatif çözümler kullanın.</div>';
+                }
+            } catch (error) {
+                results.innerHTML = '<div class="status error"><strong>❌ PHP Test Başarısız</strong><br>' + error.message + '</div>';
+            }
+        }
+
+        // Statik JSON kullan
+        function useStaticJSON() {
+            document.getElementById('flutter-url').textContent = window.location.origin + '/secret_word.json';
+            document.getElementById('test-results').innerHTML = '<div class="status success"><strong>✅ Statik JSON Aktif</strong><br>Flutter uygulamanızda yukarıdaki URL\'yi kullanın.</div>';
+        }
+
+        // JavaScript çözümü
+        function useJavaScript() {
+            document.getElementById('flutter-url').textContent = window.location.origin + '/api.js';
+            document.getElementById('test-results').innerHTML = '<div class="status success"><strong>✅ JavaScript API Aktif</strong><br>Dinamik kelime değişimi çalışıyor.</div>';
+        }
+
+        // Manuel kelime değiştirme
+        function changeWord() {
+            const selector = document.getElementById('word-selector');
+            currentWord = selector.value;
+            lastUpdateTime = new Date();
+            
+            document.getElementById('word').textContent = currentWord;
+            document.getElementById('update-time').textContent = lastUpdateTime.toLocaleString('tr-TR');
+            updateJSON();
+        }
+
+        // Sayfa yüklendiğinde başlat
+        window.onload = function() {
+            updateWord();
+            
+            // Her 30 saniyede bir güncelle
+            setInterval(updateWord, 30000);
+            
+            // Her saniye kalan süreyi güncelle
+            setInterval(function() {
+                const nextChange = new Date(lastUpdateTime.getTime() + (3 * 60 * 1000));
+                const remaining = Math.max(0, Math.floor((nextChange - new Date()) / 1000));
+                document.getElementById('next-change').textContent = remaining + ' saniye sonra';
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
